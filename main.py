@@ -70,9 +70,10 @@ def optimize_printing(print_jobs: List[Dict], constraints: Dict) -> Dict:
     """
     jobs = [PrintJob(**job) for job in print_jobs]
     printer_constraints = PrinterConstraints(**constraints)
+    sorted_jobs = sorted(jobs, key=lambda job: job.priority)
 
     return {
-        "print_order": [job.id for job in jobs],
+        "print_order": [job.id for job in sorted_jobs],
         "total_time": printer_constraints.max_items,
     }
 
