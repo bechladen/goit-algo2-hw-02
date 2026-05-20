@@ -1,24 +1,10 @@
-from dataclasses import dataclass
-from typing import Dict, List, Tuple
-
-
-@dataclass
-class PrintJob:
-    id: str
-    volume: float
-    priority: int
-    print_time: int
-
-
-@dataclass
-class PrinterConstraints:
-    max_volume: float
-    max_items: int
+from typing import List, Tuple
 
 
 def find_min_max(numbers: List[float]) -> Tuple[float, float]:
     """
     Знаходить мінімальний та максимальний елементи методом «розділяй і володарюй».
+    Повертає кортеж (мінімум, максимум).
     """
     if not numbers:
         raise ValueError("Масив не повинен бути порожнім")
@@ -62,42 +48,6 @@ def test_min_max_search() -> None:
         minimum, maximum = find_min_max(numbers)
         print(f"Масив: {numbers}")
         print(f"Мінімум: {minimum}, максимум: {maximum}")
-
-
-def optimize_printing(print_jobs: List[Dict], constraints: Dict) -> Dict:
-    """
-    Оптимізує чергу 3D-друку згідно з пріоритетами та обмеженнями принтера.
-    """
-    jobs = [PrintJob(**job) for job in print_jobs]
-    printer_constraints = PrinterConstraints(**constraints)
-    sorted_jobs = sorted(jobs, key=lambda job: job.priority)
-    groups = []
-    current_group = []
-    current_volume = 0.0
-
-    for job in sorted_jobs:
-        can_add_by_volume = current_volume + job.volume <= printer_constraints.max_volume
-        can_add_by_items = len(current_group) < printer_constraints.max_items
-
-        if current_group and (not can_add_by_volume or not can_add_by_items):
-            groups.append(current_group)
-            current_group = []
-            current_volume = 0.0
-
-        current_group.append(job)
-        current_volume += job.volume
-
-    if current_group:
-        groups.append(current_group)
-
-    total_time = 0
-    for group in groups:
-        total_time += max(job.print_time for job in group)
-
-    return {
-        "print_order": [job.id for group in groups for job in group],
-        "total_time": total_time,
-    }
 
 
 if __name__ == "__main__":
