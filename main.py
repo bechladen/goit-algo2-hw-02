@@ -90,9 +90,13 @@ def optimize_printing(print_jobs: List[Dict], constraints: Dict) -> Dict:
     if current_group:
         groups.append(current_group)
 
+    total_time = 0
+    for group in groups:
+        total_time += max(job.print_time for job in group)
+
     return {
         "print_order": [job.id for group in groups for job in group],
-        "total_time": printer_constraints.max_items,
+        "total_time": total_time,
     }
 
 
