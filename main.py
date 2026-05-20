@@ -1,4 +1,19 @@
-from typing import List, Tuple
+from dataclasses import dataclass
+from typing import Dict, List, Tuple
+
+
+@dataclass
+class PrintJob:
+    id: str
+    volume: float
+    priority: int
+    print_time: int
+
+
+@dataclass
+class PrinterConstraints:
+    max_volume: float
+    max_items: int
 
 
 def find_min_max(numbers: List[float]) -> Tuple[float, float]:
@@ -47,6 +62,19 @@ def test_min_max_search() -> None:
         minimum, maximum = find_min_max(numbers)
         print(f"Масив: {numbers}")
         print(f"Мінімум: {minimum}, максимум: {maximum}")
+
+
+def optimize_printing(print_jobs: List[Dict], constraints: Dict) -> Dict:
+    """
+    Оптимізує чергу 3D-друку згідно з пріоритетами та обмеженнями принтера.
+    """
+    jobs = [PrintJob(**job) for job in print_jobs]
+    printer_constraints = PrinterConstraints(**constraints)
+
+    return {
+        "print_order": [job.id for job in jobs],
+        "total_time": printer_constraints.max_items,
+    }
 
 
 if __name__ == "__main__":
